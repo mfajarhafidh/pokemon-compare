@@ -1,2 +1,1 @@
-# pokemon-compare
-Pokemon Comparing
+#Pokemon Comparing

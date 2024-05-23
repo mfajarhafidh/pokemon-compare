@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../presentation/screens.dart';
-import 'bindings/controllers/controllers_bindings.dart';
+import '../../presentation/pages.dart';
+import '../../presentation/bindings/bindings.dart';
 import 'routes.dart';
 
 class Nav {
@@ -9,7 +9,7 @@ class Nav {
     GetPage(
       name: Routes.HOME,
       page: () => const HomeScreen(),
-      binding: HomeControllerBinding(),
+      binding: HomeBinding(),
     ),
   ];
 }

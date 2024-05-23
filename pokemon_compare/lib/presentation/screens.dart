@@ -1,1 +1,0 @@
-export 'package:pokemon_compare/presentation/home/home.screen.dart';

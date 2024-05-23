@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'config.dart';
@@ -19,15 +20,19 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: EnvironmentsBadge(
-        child: GetMaterialApp(
-          initialRoute: initialRoute,
-          getPages: Nav.routes,
-        ),
-      ),
-    );
+    return ScreenUtilInit(
+        minTextAdapt: true,
+        builder: (_, child) {
+          return Directionality(
+            textDirection: TextDirection.ltr,
+            child: EnvironmentsBadge(
+              child: GetMaterialApp(
+                initialRoute: initialRoute,
+                getPages: Nav.routes,
+              ),
+            ),
+          );
+        });
   }
 }
 

@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pokemon_compare/domain/core/constants/assets_constants.dart';
+import 'package:pokemon_compare/domain/core/constants/color_constants.dart';
 import 'package:pokemon_compare/domain/core/utils/style_utils.dart';
 import 'package:pokemon_compare/domain/core/utils/tab_utils.dart';
 import 'package:pokemon_compare/presentation/pages/home/tabs/tab_about.dart';
@@ -17,61 +20,68 @@ class HomeScreen extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = Get.mediaQuery.padding.top;
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Row(
+        body: Stack(
           children: [
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 30.h),
-                    child: Text(
-                      'Pokedex',
-                      style: TextStyle(
-                          fontSize: 20.sp, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  15.verticalSpace,
-                  Obx(
-                    () => _gridItem(),
-                  ),
-                ],
+            Positioned(
+              top: statusBarHeight - 240 / 2.9,
+              left: Get.width - (240 / 1.6),
+              child: Opacity(
+                opacity: 0.05,
+                child: Image.asset(
+                  AssetsConstants.backgroundPokeball,
+                  height: 240,
+                  width: 240,
+                ),
               ),
             ),
             Obx(
-              () => controller.namePokemonChosen.toString().isNotEmpty
-                  ? controller.isLoading.value
-                      ? const CircularProgressIndicator()
-                      : Expanded(
-                          child: Row(
+              () => controller.isLoading.value
+                  ? Center(
+                      child: LoadingAnimationWidget.twistingDots(
+                        leftDotColor: Colors.black,
+                        rightDotColor: Colors.red,
+                        size: 200,
+                      ),
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
                             children: [
-                              _sideDrawer(secondDrawer: false),
-                              // controller.isLoading2.value
-                              //     ? CircularProgressIndicator()
-                              //     : Expanded(
-                              //         child: _sideDrawer(secondDrawer: true)),
+                              Padding(
+                                padding: EdgeInsets.only(top: 30.h),
+                                child: Text(
+                                  'Pokedex',
+                                  style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              15.verticalSpace,
+                              Obx(
+                                () => _gridItem(),
+                              ),
                             ],
                           ),
-                        )
-                  : const SizedBox(),
-            ),
-            Obx(
-              () => controller.namePokemonChosen2.toString().isNotEmpty
-                  ? controller.isLoading2.value
-                      ? const CircularProgressIndicator()
-                      : Expanded(
-                          child: Row(
-                            children: [
-                              controller.isLoading2.value
-                                  ? const CircularProgressIndicator()
-                                  : Expanded(
-                                      child: _sideDrawer(secondDrawer: true)),
-                            ],
-                          ),
-                        )
-                  : const SizedBox(),
+                        ),
+                        Obx(
+                          () =>
+                              controller.namePokemonChosen.toString().isNotEmpty
+                                  ? Expanded(
+                                      child: Row(
+                                        children: [
+                                          _sideDrawer(),
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                        ),
+                      ],
+                    ),
             ),
           ],
         ));
@@ -82,127 +92,123 @@ class HomeScreen extends GetView<HomeController> {
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: controller.namePokemonChosen.value != '' ? 1 : 2,
         ),
         itemCount: controller.pokemonNameList.length,
         itemBuilder: (BuildContext context, int index) {
-          return controller.isLoading.value
-              ? const CircularProgressIndicator()
-              : InkWell(
-                  onTap: () {
-                    if (controller.namePokemonChosen.value.isEmpty ||
-                        controller.namePokemonChosen.value == '') {
-                      controller.selectedPokemon(
-                          int.parse(controller.pokemonIdList[index]));
-                    } else {
-                      controller.selectedPokemon2(
-                          int.parse(controller.pokemonIdList[index]));
-                      controller.namePokemonChosen.value = '';
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 20.w, top: 10.h),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          color: Colors.green),
-                      child: Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 10.w),
-                                child: Align(
-                                    alignment: Alignment.topRight,
+          return InkWell(
+            onTap: () {
+              controller
+                  .selectedPokemon(int.parse(controller.pokemonIdList[index]));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                padding: EdgeInsets.only(left: 20.w, top: 10.h),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.r),
+                    color: ColorConstants.colorByType(
+                        controller.pokemonTypeList[index])),
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10.w),
+                          child: Align(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                '#${controller.pokemonIdList[index].toString()}',
+                                style: StyleUtils.titleText
+                                    .copyWith(color: Colors.black12),
+                              )),
+                        ),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              controller
+                                  .pokemonNameList[index].capitalizeFirst!,
+                              style: StyleUtils.titleText,
+                            )),
+                        10.verticalSpace,
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: controller.pokemonTypeList[index] == '' ||
+                                    controller.pokemonTypeList[index].isEmpty
+                                ? const SizedBox()
+                                : Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.black12,
+                                        borderRadius:
+                                            BorderRadius.circular(30.r)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 5.h),
                                     child: Text(
-                                      '#${controller.pokemonIdList[index].toString()}',
-                                      style: StyleUtils.titleText
-                                          .copyWith(color: Colors.black12),
-                                    )),
-                              ),
-                              Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    controller.pokemonNameList[index]
-                                        .capitalizeFirst!,
-                                    style: StyleUtils.titleText,
-                                  )),
-                              10.verticalSpace,
-                              Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: controller.pokemonTypeList[index] ==
-                                              '' ||
-                                          controller
-                                              .pokemonTypeList[index].isEmpty
-                                      ? const SizedBox()
-                                      : Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.black12,
-                                              borderRadius:
-                                                  BorderRadius.circular(30.r)),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 5.h),
-                                          child: Text(
-                                            controller.pokemonTypeList[index]
-                                                .capitalizeFirst!,
-                                            style: StyleUtils.normalText,
-                                          ))),
-                              10.verticalSpace,
-                              Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: controller.pokemonTypeList2[index] ==
-                                              '' ||
-                                          controller.pokemonTypeList2[index]
-                                              .isEmpty ||
-                                          controller
-                                              .pokemonTypeList2[index].isBlank!
-                                      ? const SizedBox()
-                                      : Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.black12,
-                                              borderRadius:
-                                                  BorderRadius.circular(30.r)),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.w, vertical: 5.h),
-                                          child: Text(
-                                              controller.pokemonTypeList2[index]
-                                                  .capitalizeFirst!,
-                                              style: StyleUtils.normalText))),
-                            ],
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Image.asset(
-                              AssetsConstants.backgroundPokeball,
-                              height: 65.h,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 20.h),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Image.network(
-                                controller.pokemonImageList[index].frontDefault
-                                    .toString(),
-                                height: 70.h,
-                              ),
-                            ),
-                          ),
-                        ],
+                                      controller.pokemonTypeList[index]
+                                          .capitalizeFirst!,
+                                      style: StyleUtils.normalText,
+                                    ))),
+                        10.verticalSpace,
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: controller.pokemonTypeList2[index] == '' ||
+                                    controller
+                                        .pokemonTypeList2[index].isEmpty ||
+                                    controller.pokemonTypeList2[index].isBlank!
+                                ? const SizedBox()
+                                : Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.black12,
+                                        borderRadius:
+                                            BorderRadius.circular(30.r)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w, vertical: 5.h),
+                                    child: Text(
+                                        controller.pokemonTypeList2[index]
+                                            .capitalizeFirst!,
+                                        style: StyleUtils.normalText))),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Image.asset(
+                        AssetsConstants.backgroundPokeball,
+                        height: 65.h,
                       ),
                     ),
-                  ),
-                );
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 20.h),
+                      child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: CachedNetworkImage(
+                            height: 100,
+                            imageUrl: controller
+                                .pokemonImageList[index].frontDefault
+                                .toString(),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.transparent,
+                            ),
+                            placeholder: (context, url) => Container(
+                              color: Colors.transparent,
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
         });
   }
 
-  Widget _sideDrawer({required bool secondDrawer}) {
+  Widget _sideDrawer() {
     return Container(
       height: 400.h,
       decoration: BoxDecoration(
-          color: Colors.green.shade400,
+          color: ColorConstants.colorByType(
+            controller.pokemonType.first,
+          ),
           borderRadius: BorderRadius.circular(20.r)),
       child: Stack(
         children: [
@@ -216,9 +222,7 @@ class HomeScreen extends GetView<HomeController> {
                   child: Column(
                     children: [
                       Text(
-                        secondDrawer == true
-                            ? controller.pokemonName2.first.capitalizeFirst!
-                            : controller.pokemonName.first.capitalizeFirst!,
+                        controller.pokemonName.first.capitalizeFirst!,
                         style: StyleUtils.titleText,
                       ),
                       10.verticalSpace,
@@ -231,59 +235,41 @@ class HomeScreen extends GetView<HomeController> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10.w, vertical: 5.h),
                             child: Text(
-                              secondDrawer == true
-                                  ? controller.pokemonType22.first
-                                  : controller.pokemonType.first,
+                              controller.pokemonType.first,
                               style: StyleUtils.normalText,
                             ),
                           ),
                           10.horizontalSpace,
-                          secondDrawer == true
-                              ? controller.pokemonType4.first == '' ||
-                                      controller.pokemonType4.first.isEmpty ||
-                                      controller.pokemonType4.first.isBlank!
-                                  ? const SizedBox()
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black12,
-                                          borderRadius:
-                                              BorderRadius.circular(30.r)),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w, vertical: 5.h),
-                                      child: Text(
-                                        controller.pokemonType4.first,
-                                        style: StyleUtils.normalText,
-                                      ),
-                                    )
-                              : controller.pokemonType2.first == '' ||
-                                      controller.pokemonType2.first.isEmpty ||
-                                      controller.pokemonType2.first.isBlank!
-                                  ? const SizedBox()
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black12,
-                                          borderRadius:
-                                              BorderRadius.circular(30.r)),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w, vertical: 5.h),
-                                      child: Text(
-                                        controller.pokemonType2.first,
-                                        style: StyleUtils.normalText,
-                                      ),
-                                    ),
+                          controller.pokemonType2.first == '' ||
+                                  controller.pokemonType2.first.isEmpty ||
+                                  controller.pokemonType2.first.isBlank!
+                              ? const SizedBox()
+                              : Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.black12,
+                                      borderRadius:
+                                          BorderRadius.circular(30.r)),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w, vertical: 5.h),
+                                  child: Text(
+                                    controller.pokemonType2.first,
+                                    style: StyleUtils.normalText,
+                                  ),
+                                ),
                         ],
                       ),
                     ],
                   ),
                 ),
                 60.horizontalSpace,
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    secondDrawer == true
-                        ? '#${controller.pokemonId2.first}'
-                        : '#${controller.pokemonId.first}',
-                    style: StyleUtils.titleText.copyWith(color: Colors.white),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, top: 20),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Text(
+                      '#${controller.pokemonId.first}',
+                      style: StyleUtils.titleText.copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
               ],
@@ -302,7 +288,7 @@ class HomeScreen extends GetView<HomeController> {
               alignment: Alignment.bottomLeft,
               child: Container(
                 height: 200.h,
-                width: 200.w,
+                width: 225.w,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -324,15 +310,15 @@ class HomeScreen extends GetView<HomeController> {
                         onPageChanged: (pageIndex) {
                           controller.selectedPage(pageIndex);
                         },
-                        children: [
+                        children: const [
                           TabAbout(
-                            second: secondDrawer == true ? true : false,
+                            second: false,
                           ),
                           TabBaseStats(
-                            second: secondDrawer == true ? true : false,
+                            second: false,
                           ),
-                          const TabEvolution(),
-                          const TabMoves(),
+                          TabEvolution(),
+                          TabMoves(),
                         ],
                       ),
                     ),
@@ -342,15 +328,18 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           Positioned(
-            right: 20.w,
-            top: 90.h,
-            child: Image.network(
-              secondDrawer == true
-                  ? controller.pokemonImage2.first.frontDefault.toString()
-                  : controller.pokemonImage.first.frontDefault.toString(),
-              height: 120.h,
-            ),
-          ),
+              right: 20.w,
+              top: 90.h,
+              child: CachedNetworkImage(
+                height: 100,
+                imageUrl: controller.pokemonImage.first.frontDefault.toString(),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.transparent,
+                ),
+                placeholder: (context, url) => Container(
+                  color: Colors.transparent,
+                ),
+              )),
         ],
       ),
     );

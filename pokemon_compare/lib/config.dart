@@ -6,7 +6,7 @@ class Environments {
 }
 
 class ConfigEnvironments {
-  static const String _currentEnvironments = Environments.DEV;
+  static const String _currentEnvironments = Environments.PRODUCTION;
   static final List<Map<String, String>> _availableEnvironments = [
     {
       'env': Environments.LOCAL,
@@ -22,7 +22,7 @@ class ConfigEnvironments {
     },
     {
       'env': Environments.PRODUCTION,
-      'url': '',
+      'url': 'https://pokeapi.co/api/v2/',
     },
   ];
 

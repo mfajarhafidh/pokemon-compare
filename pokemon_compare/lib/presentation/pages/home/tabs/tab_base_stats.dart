@@ -2,28 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:pokemon_compare/presentation/controllers/home/home_controller.dart';
+import 'package:pokemon_compare/presentation/controllers/detail_compare/detail_compare_controller.dart';
 
-class TabBaseStats extends GetView<HomeController> {
-  final bool second;
-  const TabBaseStats({super.key, required this.second});
+class TabBaseStats extends GetView<DetailCompareController> {
+  const TabBaseStats({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        10.verticalSpace,
-        _rowTextGraph(title: 'HP', fillText: 45, progress: 0.45),
-        10.verticalSpace,
-        _rowTextGraph(title: 'Attack', fillText: 60, progress: 0.45),
-        10.verticalSpace,
-        _rowTextGraph(title: 'Defense', fillText: 48, progress: 0.45),
-        10.verticalSpace,
-        _rowTextGraph(title: 'Sp. Atk', fillText: 65, progress: 0.45),
-        10.verticalSpace,
-        _rowTextGraph(title: 'Sp. Def', fillText: 65, progress: 0.45),
-      ],
-    );
+    return ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: controller.pokemonStats.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.w),
+            child: Column(
+              children: [
+                20.verticalSpace,
+                _rowTextGraph(
+                    title: controller.pokemonStats[index],
+                    fillText: controller.pokemonBaseStats[index].toDouble(),
+                    progress:
+                        (controller.pokemonBaseStats[index].toDouble()) / 100),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _rowTextGraph(
@@ -35,7 +38,7 @@ class TabBaseStats extends GetView<HomeController> {
         SizedBox(
           width: 45.w,
           child: Text(
-            title,
+            title.capitalizeFirst!,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.sp),
           ),
         ),
@@ -51,7 +54,7 @@ class TabBaseStats extends GetView<HomeController> {
           width: 120.w,
           lineHeight: 3.h,
           percent: progress,
-          progressColor: Colors.green,
+          progressColor: controller.colorProgress(progress: progress),
         ),
       ],
     );

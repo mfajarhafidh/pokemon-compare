@@ -6,4 +6,6 @@ class StyleUtils {
       fontWeight: FontWeight.w600, color: Colors.white, fontSize: 10.sp);
   static TextStyle titleText = TextStyle(
       fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14.sp);
+  static TextStyle titleDetailText = TextStyle(
+      fontWeight: FontWeight.w600, color: Colors.white, fontSize: 20.sp);
 }

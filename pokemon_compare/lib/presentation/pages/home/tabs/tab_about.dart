@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:pokemon_compare/presentation/controllers/home/home_controller.dart';
+import 'package:pokemon_compare/presentation/controllers/detail_compare/detail_compare_controller.dart';
 
-class TabAbout extends GetView<HomeController> {
-  final bool second;
-  const TabAbout({super.key, required this.second});
+class TabAbout extends GetView<DetailCompareController> {
+  const TabAbout({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        20.verticalSpace,
-        _rowText(
-            title: 'Height',
-            fillText: second == true
-                ? '${controller.pokemonHeight2.first} dm'
-                : '${controller.pokemonHeight.first} dm'),
-        10.verticalSpace,
-        _rowText(
-            title: 'Weight',
-            fillText: second == true
-                ? '${controller.pokemonWeight2.first} hg'
-                : '${controller.pokemonWeight.first} hg'),
-        10.verticalSpace,
-        _rowText(
-            title: 'Abilities',
-            fillText: second == true
-                ? controller.pokemonAbilitiesName2.join(', ').capitalizeFirst!
-                : controller.pokemonAbilitiesName.join(', ').capitalizeFirst!),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        children: [
+          20.verticalSpace,
+          _rowText(
+              title: 'Species',
+              fillText: controller.pokemonSpecies.value.capitalizeFirst!),
+          10.verticalSpace,
+          _rowText(title: 'Height', fillText: controller.pokemonHeight.first),
+          10.verticalSpace,
+          _rowText(title: 'Weight', fillText: controller.pokemonWeight.first),
+          10.verticalSpace,
+          _rowText(
+              title: 'Abilities',
+              fillText:
+                  controller.pokemonAbilitiesName.join(', ').capitalizeFirst!),
+        ],
+      ),
     );
   }
 

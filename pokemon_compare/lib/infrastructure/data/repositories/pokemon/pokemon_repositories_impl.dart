@@ -1,3 +1,4 @@
+import 'package:pokemon_compare/domain/entities/evolution/evolution_model.dart';
 import 'package:pokemon_compare/domain/entities/pokemon/pokemon_general_model.dart';
 import 'package:pokemon_compare/domain/entities/pokemon_color/pokemon_color_model.dart';
 import 'package:pokemon_compare/domain/repositories/pokemon/pokemon_repositories.dart';
@@ -16,5 +17,10 @@ class PokemonRepositoriesImpl implements PokemonRepositories {
   @override
   Future<PokemonColorModel> getPokemonColor({required int pokemon}) {
     return _remotePokemonDataSource.getPokemonColor(pokemon: pokemon);
+  }
+
+  @override
+  Future<EvolutionModel> getEvolution({required int pokemon}) {
+    return _remotePokemonDataSource.getEvolution(pokemon: pokemon);
   }
 }

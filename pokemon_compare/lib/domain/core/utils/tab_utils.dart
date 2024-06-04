@@ -15,37 +15,41 @@ class TabUtils extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Row(
-        children: [
-          ItemTabbar(
-            label: "About",
-            isSelected: selectedIndex == 0,
-            onTap: () {
-              onTap(0);
-            },
-          ),
-          ItemTabbar(
-            label: "Base Stats",
-            isSelected: selectedIndex == 1,
-            onTap: () {
-              onTap(1);
-            },
-          ),
-          ItemTabbar(
-            label: "Evolution",
-            isSelected: selectedIndex == 2,
-            onTap: () {
-              onTap(2);
-            },
-          ),
-          ItemTabbar(
-            label: "Moves",
-            isSelected: selectedIndex == 3,
-            onTap: () {
-              onTap(3);
-            },
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.only(top: 20.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ItemTabbar(
+              label: "About",
+              isSelected: selectedIndex == 0,
+              onTap: () {
+                onTap(0);
+              },
+            ),
+            ItemTabbar(
+              label: "Base Stats",
+              isSelected: selectedIndex == 1,
+              onTap: () {
+                onTap(1);
+              },
+            ),
+            ItemTabbar(
+              label: "Evolution",
+              isSelected: selectedIndex == 2,
+              onTap: () {
+                onTap(2);
+              },
+            ),
+            ItemTabbar(
+              label: "Moves",
+              isSelected: selectedIndex == 3,
+              onTap: () {
+                onTap(3);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

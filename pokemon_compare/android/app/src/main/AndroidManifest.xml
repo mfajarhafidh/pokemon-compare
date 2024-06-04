@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pokemoncompare.pokemon_compare">
    <application
-        android:label="pokemon_compare"
+        android:label="Pokedex Compare"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

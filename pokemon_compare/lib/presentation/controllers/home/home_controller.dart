@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemon_compare/domain/entities/pokemon/pokemon_general_model.dart';
 import 'package:pokemon_compare/domain/use_case/pokemon_general/get_pokemon_general_use_case.dart';

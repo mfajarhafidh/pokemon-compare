@@ -42,27 +42,21 @@ class HomeScreen extends GetView<HomeController> {
                         size: 200,
                       ),
                     )
-                  : Row(
+                  : ListView(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
                       children: [
-                        Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 30.h),
-                                child: Text(
-                                  'Pokedex',
-                                  style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              15.verticalSpace,
-                              Obx(
-                                () => _gridItem(),
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.only(top: 30.h),
+                          child: Text(
+                            'Pokedex',
+                            style: TextStyle(
+                                fontSize: 20.sp, fontWeight: FontWeight.bold),
                           ),
+                        ),
+                        15.verticalSpace,
+                        Obx(
+                          () => _gridItem(),
                         ),
                       ],
                     ),
